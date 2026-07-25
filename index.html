@@ -565,48 +565,99 @@
       font-size: 12px;
     }
 
-    /* AI Panel */
+    /* =============================================
+       PREMIUM AI CHAT — Complete Redesign
+    ============================================= */
+
+    /* FAB Button */
     .ai-fab {
       position: fixed;
-      bottom: 26px;
-      left: 26px;
+      bottom: 28px;
+      left: 28px;
       z-index: 60;
-      width: 58px;
-      height: 58px;
+      width: 62px;
+      height: 62px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--teal), var(--teal-2));
-      box-shadow: 0 12px 28px -8px rgba(27, 75, 67, 0.5);
+      background: linear-gradient(135deg, #1B4B43 0%, #2E6E5F 50%, #4E9A85 100%);
+      box-shadow: 0 8px 32px -4px rgba(27,75,67,0.55), 0 0 0 0 rgba(46,110,95,0.4);
       display: flex;
       align-items: center;
       justify-content: center;
       border: none;
+      transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
+      animation: fabPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes fabPulse {
+      0%, 100% { box-shadow: 0 8px 32px -4px rgba(27,75,67,0.55), 0 0 0 0 rgba(46,110,95,0.4); }
+      50%       { box-shadow: 0 8px 32px -4px rgba(27,75,67,0.55), 0 0 0 12px rgba(46,110,95,0); }
+    }
+
+    .ai-fab:hover {
+      transform: scale(1.08);
+      box-shadow: 0 14px 40px -6px rgba(27,75,67,0.7);
     }
 
     .ai-fab svg {
-      width: 26px;
-      height: 26px;
+      width: 27px;
+      height: 27px;
       color: #fff;
+      transition: transform .2s;
     }
 
+    .ai-fab:hover svg {
+      transform: rotate(-10deg) scale(1.1);
+    }
+
+    /* FAB badge (unread count) */
+    .ai-fab-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background: var(--coral);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--paper);
+      opacity: 0;
+      transform: scale(0);
+      transition: .2s cubic-bezier(.34,1.56,.64,1);
+    }
+
+    .ai-fab-badge.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Panel Container */
     .ai-panel {
       position: fixed;
-      inset-inline-start: 26px;
-      bottom: 96px;
-      width: 380px;
-      max-width: 88vw;
-      height: 560px;
-      max-height: 74vh;
+      inset-inline-start: 28px;
+      bottom: 104px;
+      width: 400px;
+      max-width: 92vw;
+      height: 600px;
+      max-height: 78vh;
       background: var(--card);
-      border-radius: 20px;
-      box-shadow: 0 24px 60px -12px rgba(0, 0, 0, .35);
+      border-radius: 24px;
+      box-shadow:
+        0 32px 80px -16px rgba(0,0,0,.38),
+        0 0 0 1px rgba(255,255,255,.08) inset,
+        0 1px 0 rgba(255,255,255,.15) inset;
       border: 1px solid var(--line);
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      transform: translateY(20px) scale(.96);
+      transform: translateY(24px) scale(.95);
       opacity: 0;
       pointer-events: none;
-      transition: .22s;
+      transition: transform .28s cubic-bezier(.34,1.2,.64,1), opacity .22s ease;
       z-index: 61;
     }
 
@@ -621,138 +672,628 @@
       height: 100vh;
       height: 100dvh;
       max-width: 100vw;
-      max-height: 100vh;
       max-height: 100dvh;
       inset-inline-start: 0;
       bottom: 0;
       border-radius: 0;
     }
 
+    /* Panel Header */
     .ai-head {
-      padding: 14px 16px;
-      background: var(--teal);
+      padding: 0;
+      background: linear-gradient(135deg, #1B4B43 0%, #2E6E5F 60%, #3d8a76 100%);
       color: #fff;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
     }
 
-    .ai-head h3 {
-      font-size: 14.5px;
+    .ai-head::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 85% 20%, rgba(201,162,75,0.18) 0%, transparent 55%),
+        radial-gradient(circle at 10% 80%, rgba(232,120,90,0.12) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .ai-head-main {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .ai-head-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.15);
+      border: 1.5px solid rgba(255,255,255,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      backdrop-filter: blur(8px);
+      position: relative;
+    }
+
+    .ai-head-avatar svg {
+      width: 20px;
+      height: 20px;
+      color: #fff;
+    }
+
+    .ai-status-dot {
+      position: absolute;
+      bottom: -2px;
+      right: -2px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #4ade80;
+      border: 2px solid #2E6E5F;
+      animation: statusPulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes statusPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .7; transform: scale(1.1); }
+    }
+
+    .ai-head-info {
+      flex: 1;
+    }
+
+    .ai-head-info h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      margin: 0;
+      letter-spacing: .2px;
+    }
+
+    .ai-head-status {
+      font-size: 11px;
+      color: rgba(255,255,255,0.65);
+      margin-top: 1px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .ai-head-status .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #4ade80;
+      display: inline-block;
     }
 
     .ai-head-actions {
       display: flex;
-      gap: 6px;
+      gap: 4px;
       align-items: center;
     }
 
-    .ai-head-actions button {
-      background: rgba(255, 255, 255, .15);
-      border: none;
-      border-radius: 8px;
-      width: 30px;
-      height: 30px;
+    .ai-head-btn {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 9px;
+      width: 32px;
+      height: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: #fff;
+      cursor: pointer;
+      transition: background .15s, transform .12s;
     }
 
-    .ai-head-actions button svg {
-      width: 16px;
-      height: 16px;
+    .ai-head-btn:hover {
+      background: rgba(255,255,255,0.2);
+      transform: scale(1.06);
     }
 
+    .ai-head-btn svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    /* Suggestion chips strip */
+    .ai-chips {
+      padding: 10px 14px 14px;
+      display: flex;
+      gap: 7px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
+      position: relative;
+      z-index: 1;
+    }
+
+    .ai-chips::-webkit-scrollbar { display: none; }
+
+    .ai-chip {
+      background: rgba(255,255,255,0.13);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 11.5px;
+      color: rgba(255,255,255,0.88);
+      white-space: nowrap;
+      cursor: pointer;
+      transition: background .15s, transform .12s;
+      backdrop-filter: blur(6px);
+      font-family: inherit;
+    }
+
+    .ai-chip:hover {
+      background: rgba(255,255,255,0.22);
+      transform: translateY(-1px);
+    }
+
+    /* Chat Body */
     .ai-body {
       flex: 1;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       overscroll-behavior: contain;
-      padding: 14px;
+      padding: 16px 14px 10px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 4px;
+      scroll-behavior: smooth;
+      background:
+        radial-gradient(ellipse at 100% 0%, rgba(46,110,95,0.04) 0%, transparent 60%),
+        radial-gradient(ellipse at 0% 100%, rgba(201,162,75,0.03) 0%, transparent 60%),
+        var(--card);
     }
 
+    .ai-body::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .ai-body::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .ai-body::-webkit-scrollbar-thumb {
+      background: var(--line);
+      border-radius: 4px;
+    }
+
+    /* Message rows */
+    .msg-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      animation: msgSlideIn .28s cubic-bezier(.34,1.2,.64,1);
+    }
+
+    @keyframes msgSlideIn {
+      from { opacity: 0; transform: translateY(14px) scale(.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .msg-row.user {
+      flex-direction: row-reverse;
+      align-self: flex-end;
+    }
+
+    .msg-row.ai {
+      align-self: flex-start;
+    }
+
+    /* Message bubble */
     .msg {
-      max-width: 85%;
-      padding: 10px 13px;
-      border-radius: 14px;
-      font-size: 13px;
-      line-height: 1.8;
+      max-width: 100%;
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 18px;
+      font-size: 13.5px;
+      line-height: 1.85;
+      position: relative;
     }
 
     .msg.user {
-      align-self: flex-end;
-      background: var(--teal-2);
+      background: linear-gradient(135deg, var(--teal-2) 0%, var(--teal) 100%);
       color: #fff;
-      border-bottom-left-radius: 4px;
+      border-bottom-left-radius: 5px;
+      box-shadow: 0 4px 16px -4px rgba(27,75,67,0.4);
     }
 
     .msg.ai {
-      align-self: flex-start;
       background: var(--paper-2);
-      border-bottom-right-radius: 4px;
-    }
-
-    .msg b,
-    .msg strong {
-      font-weight: 800;
-    }
-
-    .msg ul {
-      margin: 4px 0;
-      padding-inline-start: 18px;
-    }
-
-    .msg li {
-      margin-bottom: 3px;
-    }
-
-    .msg p {
-      margin: 0 0 6px;
-    }
-
-    .msg p:last-child {
-      margin-bottom: 0;
-    }
-
-    .ai-input-row {
-      display: flex;
-      gap: 8px;
-      padding: 12px;
-      border-top: 1px solid var(--line);
-    }
-
-    .ai-input-row input {
-      flex: 1;
+      border-bottom-right-radius: 5px;
       border: 1px solid var(--line);
-      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    [data-theme="dark"] .msg.ai {
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.08);
+    }
+
+    .msg b, .msg strong { font-weight: 800; }
+    .msg ul { margin: 6px 0; padding-inline-start: 20px; }
+    .msg li { margin-bottom: 4px; }
+    .msg p { margin: 0 0 7px; }
+    .msg p:last-child { margin-bottom: 0; }
+    .msg h2, .msg h3 { font-size: 14px; margin: 8px 0 4px; }
+
+    /* Message meta row (timestamp + copy + edit) */
+    .msg-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 3px;
+      padding: 0 2px;
+      opacity: 0;
+      transition: opacity .18s;
+    }
+
+    .msg-row:hover .msg-meta {
+      opacity: 1;
+    }
+
+    /* Always show meta on touch devices */
+    @media (hover: none) {
+      .msg-meta { opacity: 1; }
+    }
+
+    .msg-time {
+      font-size: 10px;
+      color: var(--sage);
+    }
+
+    .msg-copy, .msg-edit {
+      background: none;
+      border: none;
+      padding: 2px 5px;
+      border-radius: 5px;
+      font-size: 10px;
+      color: var(--sage);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      transition: color .15s, background .15s;
+      font-family: inherit;
+    }
+
+    .msg-copy:hover, .msg-edit:hover {
+      color: var(--teal-2);
+      background: var(--paper-2);
+    }
+
+    .msg-copy svg, .msg-edit svg {
+      width: 11px;
+      height: 11px;
+    }
+
+    /* Edit mode inline */
+    .msg-edit-area {
+      width: 100%;
+      border: 1.5px solid var(--teal-2);
+      border-radius: 14px;
       padding: 10px 12px;
       background: var(--paper);
       color: var(--ink);
       font-family: inherit;
-      font-size: 13px;
+      font-size: 13.5px;
+      line-height: 1.7;
+      resize: none;
       outline: none;
+      min-height: 48px;
+      max-height: 160px;
+      overflow-y: auto;
     }
 
-    .ai-input-row button {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
+    .msg-edit-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+      justify-content: flex-end;
+    }
+
+    .msg-edit-save {
       background: var(--teal);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-family: inherit;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background .15s;
+    }
+
+    .msg-edit-save:hover { background: var(--teal-2); }
+
+    .msg-edit-cancel {
+      background: var(--paper-2);
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-family: inherit;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background .15s;
+    }
+
+    .msg-edit-cancel:hover { background: var(--line); }
+
+    /* Date separator */
+    .chat-date-sep {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    .chat-date-sep::before, .chat-date-sep::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
+    .chat-date-sep span {
+      font-size: 10.5px;
+      color: var(--sage);
+      font-weight: 600;
+    }
+
+    /* Typing indicator */
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 2px 0;
+      animation: msgSlideIn .28s cubic-bezier(.34,1.2,.64,1);
+    }
+
+    .typing-dots {
+      background: var(--paper-2);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      border-bottom-right-radius: 5px;
+      padding: 11px 16px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .typing-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--sage);
+      animation: typingBounce 1.2s ease-in-out infinite;
+    }
+
+    .typing-dot:nth-child(2) { animation-delay: .16s; }
+    .typing-dot:nth-child(3) { animation-delay: .32s; }
+
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: .5; }
+      30% { transform: translateY(-5px); opacity: 1; }
+    }
+
+    /* Suggestion chips below empty body */
+    .ai-suggestion-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 28px 14px 20px;
+      gap: 14px;
+      text-align: center;
+    }
+
+    .ai-suggestion-logo {
+      width: 58px;
+      height: 58px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #1B4B43, #2E6E5F);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(27,75,67,0.4);
+      animation: logoFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes logoFloat {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .ai-suggestion-logo svg {
+      width: 28px;
+      height: 28px;
+      color: #fff;
+    }
+
+    .ai-suggestion-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .ai-suggestion-sub {
+      font-size: 12.5px;
+      color: var(--sage);
+      line-height: 1.7;
+      max-width: 300px;
+    }
+
+    .ai-suggestion-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      max-width: 340px;
+    }
+
+    .ai-suggestion-chip {
+      background: var(--paper-2);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 7px 14px;
+      font-size: 12.5px;
+      color: var(--ink);
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 500;
+      transition: background .15s, border-color .15s, transform .12s, box-shadow .12s;
+    }
+
+    .ai-suggestion-chip:hover {
+      background: var(--card);
+      border-color: var(--teal-2);
+      color: var(--teal-2);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(27,75,67,0.15);
+    }
+
+    /* Input Area */
+    .ai-input-area {
+      padding: 10px 12px 12px;
+      border-top: 1px solid var(--line);
+      background: var(--card);
+      flex-shrink: 0;
+    }
+
+    .ai-input-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      background: var(--paper);
+      border: 1.5px solid var(--line);
+      border-radius: 16px;
+      padding: 8px 8px 8px 14px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    .ai-input-row:focus-within {
+      border-color: var(--teal-2);
+      box-shadow: 0 0 0 3px rgba(46,110,95,0.12);
+    }
+
+    .ai-input-row textarea {
+      flex: 1;
+      border: none;
+      background: transparent;
+      outline: none;
+      font-family: inherit;
+      font-size: 13.5px;
+      color: var(--ink);
+      resize: none;
+      min-height: 22px;
+      max-height: 120px;
+      line-height: 1.55;
+      padding: 0;
+      overflow-y: auto;
+    }
+
+    .ai-input-row textarea::placeholder {
+      color: var(--sage);
+    }
+
+    .ai-send-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--teal) 0%, var(--teal-2) 100%);
       color: #fff;
       border: none;
       flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: pointer;
+      transition: transform .15s cubic-bezier(.34,1.56,.64,1), box-shadow .15s, opacity .15s;
+      box-shadow: 0 4px 14px rgba(27,75,67,0.4);
     }
 
-    .ai-input-row button svg {
-      width: 18px;
-      height: 18px;
+    .ai-send-btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 6px 20px rgba(27,75,67,0.55);
+    }
+
+    .ai-send-btn:active {
+      transform: scale(0.95);
+    }
+
+    .ai-send-btn[disabled] {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .ai-send-btn svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .ai-input-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5px 2px 0;
+    }
+
+    .ai-input-hint {
+      font-size: 10.5px;
+      color: var(--sage);
+    }
+
+    .ai-input-hint kbd {
+      background: var(--paper-2);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-size: 10px;
+      font-family: inherit;
+    }
+
+    /* Hide keyboard shortcuts on mobile */
+    @media (max-width: 600px) {
+      .ai-input-hint { display: none; }
+      .ai-input-footer { display: none; }
+    }
+
+    /* Full-screen panel on mobile */
+    @media (max-width: 600px) {
+      .ai-panel {
+        inset-inline-start: 0 !important;
+        bottom: 0 !important;
+        width: 100vw !important;
+        max-width: 100vw !important;
+        height: 100dvh !important;
+        max-height: 100dvh !important;
+        border-radius: 0 !important;
+      }
+      .ai-fab {
+        bottom: 18px;
+        left: 18px;
+      }
+      /* Fullscreen button is redundant on mobile — panel is always full */
+      #aiFullscreen {
+        display: none;
+      }
+    }
+
+    /* Hide the header chips strip — chips only appear in the empty suggestion area */
+    .ai-chips {
+      display: none;
     }
 
     /* Modals & Toasts */
@@ -992,36 +1533,78 @@
   </div>
 
   <!-- AI FAB + PANEL -->
-  <button class="ai-fab" id="aiFab">
+  <button class="ai-fab" id="aiFab" aria-label="فتح مساعد التغذية الذكي">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path
-        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
     </svg>
+    <span class="ai-fab-badge" id="aiFabBadge">1</span>
   </button>
-  <div class="ai-panel" id="aiPanel">
+
+  <div class="ai-panel" id="aiPanel" role="dialog" aria-label="مساعد التغذية الذكي">
+
+    <!-- Header -->
     <div class="ai-head">
-      <h3>💬 مساعد التغذية الذكي</h3>
-      <div class="ai-head-actions">
-        <button id="aiClear" title="مسح المحادثة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2">
-            <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6" />
-          </svg></button>
-        <button id="aiFullscreen" title="ملء الشاشة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2">
-            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
-          </svg></button>
-        <button id="aiClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15"
-            height="15">
-            <path d="M18 6 6 18M6 6l12 12" />
-          </svg></button>
+      <div class="ai-head-main">
+        <div class="ai-head-avatar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7H3a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/>
+            <path d="M5 14v7M19 14v7M3 21h18"/>
+            <circle cx="8.5" cy="11" r="1" fill="currentColor"/>
+            <circle cx="15.5" cy="11" r="1" fill="currentColor"/>
+          </svg>
+          <span class="ai-status-dot"></span>
+        </div>
+        <div class="ai-head-info">
+          <h3>مساعد التغذية الذكي</h3>
+          <div class="ai-head-status">
+            <span class="dot"></span>
+            <span id="aiStatusText">متاح دائماً</span>
+          </div>
+        </div>
+        <div class="ai-head-actions">
+          <button class="ai-head-btn" id="aiClear" title="مسح المحادثة">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6" />
+            </svg>
+          </button>
+          <button class="ai-head-btn" id="aiFullscreen" title="ملء الشاشة">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="aiFullscreenIcon">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+            </svg>
+          </button>
+          <button class="ai-head-btn" id="aiClose" title="إغلاق">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <!-- Quick chips in header -->
+      <div class="ai-chips" id="aiHeaderChips">
+        <button class="ai-chip" data-chip="ما هي أفضل وجبة فطور لإنقاص الوزن؟">🌅 أفضل فطور</button>
+        <button class="ai-chip" data-chip="ما هي البدائل الصحية للحلويات؟">🍫 بدائل الحلويات</button>
+        <button class="ai-chip" data-chip="ما هي الأطعمة الممنوعة في النظام؟">🚫 الممنوعات</button>
+        <button class="ai-chip" data-chip="كم كالوري يجب أن آكل يومياً؟">📊 كالوري اليوم</button>
+        <button class="ai-chip" data-chip="هل يمكنني تناول الأرز؟">🍚 الأرز مسموح؟</button>
       </div>
     </div>
+
+    <!-- Messages Body -->
     <div class="ai-body" id="aiBody"></div>
-    <div class="ai-input-row">
-      <input id="aiInput" placeholder="اسأل عن نظامك، بدائل، أو خيارات الطعام...">
-      <button id="aiSend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="m22 2-7 20-4-9-9-4Z" />
-        </svg></button>
+
+    <!-- Input Area -->
+    <div class="ai-input-area">
+      <div class="ai-input-row">
+        <textarea id="aiInput" placeholder="اسأل عن وجباتك، البدائل، أو أي شيء غذائي..." rows="1" aria-label="رسالتك"></textarea>
+        <button class="ai-send-btn" id="aiSend" aria-label="إرسال" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="m22 2-7 20-4-9-9-4Z" />
+          </svg>
+        </button>
+      </div>
+      <div class="ai-input-footer">
+        <span class="ai-input-hint">اضغط <kbd>Enter</kbd> للإرسال، <kbd>Shift+Enter</kbd> لسطر جديد</span>
+      </div>
     </div>
   </div>
 
@@ -1348,72 +1931,338 @@
       return html;
     }
 
+    /* ---- Premium AI Chat Controller ---- */
+
+    const SUGGESTIONS = [
+      'ما هو الفطور الأمثل لإنقاص الوزن؟',
+      'هل الأرز مسموح في النظام؟',
+      'اقترح علي وجبة غداء صحية',
+      'ما هي الأطعمة الممنوعة تماماً؟',
+      'كيف أختار سناك صحي؟',
+      'هل يمكنني تناول الشوكولا؟'
+    ];
+
+    function showSuggestionArea () {
+      const body = document.getElementById('aiBody');
+      const area = document.createElement('div');
+      area.className = 'ai-suggestion-area';
+      area.id = 'aiSuggestionArea';
+      area.innerHTML = `
+        <div class="ai-suggestion-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7H3a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/>
+            <path d="M5 14v7M19 14v7M3 21h18"/>
+          </svg>
+        </div>
+        <div class="ai-suggestion-title">مساعد التغذية الذكي</div>
+        <div class="ai-suggestion-sub">اسألني عن وجباتك، البدائل، السعرات، أو أي سؤال غذائي — وسأرشدك فوراً.</div>
+        <div class="ai-suggestion-chips">
+          ${SUGGESTIONS.map(s => `<button class="ai-suggestion-chip">${s}</button>`).join('')}
+        </div>`;
+      body.appendChild(area);
+      area.querySelectorAll('.ai-suggestion-chip').forEach(btn => {
+        btn.onclick = () => {
+          const input = document.getElementById('aiInput');
+          input.value = btn.textContent;
+          autoResizeTextarea();
+          document.getElementById('aiSend').disabled = false;
+          input.focus();
+          document.getElementById('aiSend').click();
+        };
+      });
+    }
+
     function openAI () {
-      document.getElementById('aiPanel').classList.add('open');
+      const panel = document.getElementById('aiPanel');
+      panel.classList.add('open');
       document.body.classList.add('no-scroll');
+      // hide badge
+      document.getElementById('aiFabBadge').classList.remove('show');
+      // Focus input
+      setTimeout(() => document.getElementById('aiInput').focus(), 260);
+    }
+
+    function closeAI () {
+      document.getElementById('aiPanel').classList.remove('open');
+      document.body.classList.remove('no-scroll');
     }
 
     document.getElementById('aiFab').onclick = () => {
       const panel = document.getElementById('aiPanel');
-      panel.classList.toggle('open');
-      document.body.classList.toggle('no-scroll', panel.classList.contains('open'));
-
-      if (panel.classList.contains('open') && document.getElementById('aiBody').children.length === 0) {
+      const isOpen = panel.classList.contains('open');
+      if (isOpen) { closeAI(); return; }
+      openAI();
+      const body = document.getElementById('aiBody');
+      if (body.children.length === 0) {
         if (state.chatHistory.length) {
           state.chatHistory.forEach(m => appendMsg(m.role, m.text, false));
         } else {
-          appendMsg('ai', `مرحباً بك👋! أنا مرشدك الغذائي. اسألني لتعرف كيف تختار وجباتك وتلتزم بالنظام دون الحاجة لحساب السعرات طوال الوقت.`);
+          showSuggestionArea();
         }
       }
     };
 
-    document.getElementById('aiClose').onclick = () => {
-      document.getElementById('aiPanel').classList.remove('open');
-      document.body.classList.remove('no-scroll');
-    };
+    document.getElementById('aiClose').onclick = closeAI;
 
     document.getElementById('aiClear').onclick = () => {
       state.chatHistory = [];
       save('diet_chat', state.chatHistory);
       document.getElementById('aiBody').innerHTML = '';
-      appendMsg('ai', 'تم مسح المحادثة. كيف أستطيع توجيهك اليوم؟', false);
-      state.chatHistory = [ { role: 'ai', text: 'تم مسح المحادثة. كيف أستطيع توجيهك اليوم؟' } ];
-      save('diet_chat', state.chatHistory);
+      showSuggestionArea();
     };
-    document.getElementById('aiFullscreen').onclick = () => document.getElementById('aiPanel').classList.toggle('fullscreen');
+
+    document.getElementById('aiFullscreen').onclick = () => {
+      const panel = document.getElementById('aiPanel');
+      const isFs = panel.classList.toggle('fullscreen');
+      document.getElementById('aiFullscreenIcon').innerHTML = isFs
+        ? '<path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 0 2-2h3M3 16h3a2 2 0 0 0 2 2v3" />'
+        : '<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />';
+    };
+
+    // Header chip clicks
+    document.getElementById('aiHeaderChips').querySelectorAll('.ai-chip').forEach(chip => {
+      chip.onclick = () => {
+        if (!document.getElementById('aiPanel').classList.contains('open')) openAI();
+        const body = document.getElementById('aiBody');
+        if (body.children.length === 0) showSuggestionArea();
+        const input = document.getElementById('aiInput');
+        input.value = chip.dataset.chip;
+        autoResizeTextarea();
+        document.getElementById('aiSend').disabled = false;
+        input.focus();
+        document.getElementById('aiSend').click();
+      };
+    });
+
+    function fmtTime (date) {
+      return date.toLocaleTimeString('ar-LB', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function copyMsgText (text, copyBtn) {
+      const doFallback = () => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        toast('تم النسخ!');
+      };
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        const origHTML = copyBtn.innerHTML;
+        copyBtn.textContent = '✓ تم';
+        toast('تم النسخ!');
+        setTimeout(() => { copyBtn.innerHTML = origHTML; }, 2000);
+      }).catch(() => {
+        doFallback();
+        const origHTML = copyBtn.innerHTML;
+        copyBtn.textContent = '✓ تم';
+        setTimeout(() => { copyBtn.innerHTML = origHTML; }, 2000);
+      });
+    }
 
     function appendMsg (role, text, persist = true) {
       const body = document.getElementById('aiBody');
-      const div = document.createElement('div');
-      div.className = 'msg-row ' + role;
-      div.style.display = 'flex';
-      div.style.flexDirection = role === 'user' ? 'row-reverse' : 'row';
-      div.style.alignItems = 'flex-end';
-      div.style.gap = '6px';
-      div.style.alignSelf = role === 'user' ? 'flex-end' : 'flex-start';
+
+      // Remove the suggestion area if present
+      const sug = body.querySelector('.ai-suggestion-area');
+      if (sug) sug.remove();
+
+      const row = document.createElement('div');
+      row.className = 'msg-row ' + role;
+
+      // No avatar — bubbles use full inner width
+      const inner = document.createElement('div');
+      inner.style.display = 'flex';
+      inner.style.flexDirection = 'column';
+      inner.style.alignItems = role === 'user' ? 'flex-end' : 'flex-start';
+      inner.style.maxWidth = '88%';
+      inner.style.width = '88%';
 
       const bubble = document.createElement('div');
       bubble.className = 'msg ' + role;
-      bubble.innerHTML = role === 'ai' ? renderMarkdown(text) : text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-      div.appendChild(bubble);
+      bubble.dataset.rawText = text;
+      bubble.innerHTML = role === 'ai'
+        ? renderMarkdown(text)
+        : text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-      body.appendChild(div);
-      body.scrollTop = body.scrollHeight;
+      const now = new Date();
+      const meta = document.createElement('div');
+      meta.className = 'msg-meta';
+      if (role === 'user') meta.style.flexDirection = 'row-reverse';
+
+      const copyBtnHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> نسخ`;
+      const editBtnHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> تعديل`;
+
+      meta.innerHTML = `
+        <span class="msg-time">${fmtTime(now)}</span>
+        <button class="msg-copy" title="نسخ">${copyBtnHTML}</button>
+        ${role === 'user' ? `<button class="msg-edit" title="تعديل">${editBtnHTML}</button>` : ''}`;
+
+      // Copy handler
+      meta.querySelector('.msg-copy').onclick = function () {
+        copyMsgText(bubble.dataset.rawText || bubble.innerText, this);
+      };
+
+      // Edit handler (user messages only)
+      if (role === 'user') {
+        meta.querySelector('.msg-edit').onclick = () => {
+          // Don't allow multiple edits at once
+          if (inner.querySelector('.msg-edit-area')) return;
+
+          const originalText = bubble.dataset.rawText || bubble.innerText;
+          bubble.style.display = 'none';
+          meta.style.display = 'none';
+
+          const editArea = document.createElement('textarea');
+          editArea.className = 'msg-edit-area';
+          editArea.value = originalText;
+          editArea.style.height = 'auto';
+
+          const editActions = document.createElement('div');
+          editActions.className = 'msg-edit-actions';
+
+          const cancelBtn = document.createElement('button');
+          cancelBtn.className = 'msg-edit-cancel';
+          cancelBtn.textContent = 'إلغاء';
+
+          const saveBtn = document.createElement('button');
+          saveBtn.className = 'msg-edit-save';
+          saveBtn.textContent = 'إرسال';
+
+          editActions.appendChild(cancelBtn);
+          editActions.appendChild(saveBtn);
+          inner.appendChild(editArea);
+          inner.appendChild(editActions);
+
+          // Auto-resize
+          editArea.addEventListener('input', () => {
+            editArea.style.height = 'auto';
+            editArea.style.height = Math.min(editArea.scrollHeight, 160) + 'px';
+          });
+          editArea.dispatchEvent(new Event('input'));
+          editArea.focus();
+
+          cancelBtn.onclick = () => {
+            editArea.remove();
+            editActions.remove();
+            bubble.style.display = '';
+            meta.style.display = '';
+          };
+
+          saveBtn.onclick = () => {
+            const newText = editArea.value.trim();
+            if (!newText) return;
+            editArea.remove();
+            editActions.remove();
+            // Update bubble
+            bubble.dataset.rawText = newText;
+            bubble.innerHTML = newText.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            bubble.style.display = '';
+            meta.style.display = '';
+            // Update history and re-submit
+            const histIdx = state.chatHistory.findLastIndex(m => m.role === 'user' && m.text === originalText);
+            if (histIdx !== -1) {
+              // Remove everything after and including this message in history
+              state.chatHistory = state.chatHistory.slice(0, histIdx);
+              save('diet_chat', state.chatHistory);
+              // Remove all subsequent DOM rows
+              const allRows = Array.from(body.querySelectorAll('.msg-row, .typing-indicator'));
+              const rowIndex = allRows.indexOf(row);
+              allRows.slice(rowIndex + 1).forEach(r => r.remove());
+            }
+            // Re-send
+            state.chatHistory.push({ role: 'user', text: newText });
+            save('diet_chat', state.chatHistory);
+            sendAIMessage_internal(newText);
+          };
+        };
+      }
+
+      inner.appendChild(bubble);
+      inner.appendChild(meta);
+      row.appendChild(inner);
+
+      body.appendChild(row);
+      body.scrollTo({ top: body.scrollHeight, behavior: 'smooth' });
+
       if (persist) {
         state.chatHistory.push({ role, text });
         save('diet_chat', state.chatHistory);
       }
     }
 
+    function autoResizeTextarea () {
+      const ta = document.getElementById('aiInput');
+      ta.style.height = 'auto';
+      ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
+      document.getElementById('aiSend').disabled = !ta.value.trim();
+    }
+
+    document.getElementById('aiInput').addEventListener('input', autoResizeTextarea);
+
     document.getElementById('aiSend').onclick = () => {
       const input = document.getElementById('aiInput');
-      if (!input.value.trim()) return;
-      sendAIMessage(input.value.trim());
+      const val = input.value.trim();
+      if (!val) return;
+      sendAIMessage(val);
       input.value = '';
+      input.style.height = 'auto';
+      document.getElementById('aiSend').disabled = true;
+      input.focus();
     };
+
     document.getElementById('aiInput').addEventListener('keydown', e => {
-      if (e.key === 'Enter') document.getElementById('aiSend').click();
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        document.getElementById('aiSend').click();
+      }
     });
+
+    // Internal send — does NOT re-append the user bubble (used for edits)
+    async function sendAIMessage_internal (text) {
+      if (!state.apiKey) {
+        appendMsg('ai', '⚠️ لم يتم إضافة مفتاح Gemini API بعد. افتح الإعدادات (في القائمة الجانبية) وأضف مفتاحك للمتابعة.', false);
+        return;
+      }
+      const sug = document.getElementById('aiSuggestionArea');
+      if (sug) sug.remove();
+      document.getElementById('aiStatusText').textContent = 'يكتب...';
+      document.getElementById('aiSend').disabled = true;
+      const thinkingRow = document.createElement('div');
+      thinkingRow.className = 'typing-indicator';
+      const dots = document.createElement('div');
+      dots.className = 'typing-dots';
+      dots.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+      thinkingRow.appendChild(dots);
+      document.getElementById('aiBody').appendChild(thinkingRow);
+      document.getElementById('aiBody').scrollTo({ top: 999999, behavior: 'smooth' });
+      const systemPrompt = buildSystemPrompt();
+      const contents = state.chatHistory.map(m => ({ role: m.role === 'ai' ? 'model' : 'user', parts: [{ text: m.text }] }));
+      let replyText = null;
+      for (const model of GEMINI_MODELS) {
+        try {
+          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-goog-api-key': state.apiKey },
+            body: JSON.stringify({ system_instruction: { parts: [{ text: systemPrompt }] }, contents })
+          });
+          if (!res.ok) continue;
+          const data = await res.json();
+          replyText = data?.candidates?.[0]?.content?.parts?.map(p => p.text).join('') || null;
+          if (replyText) break;
+        } catch (err) { }
+      }
+      thinkingRow.remove();
+      document.getElementById('aiStatusText').textContent = 'متاح دائماً';
+      document.getElementById('aiSend').disabled = false;
+      if (replyText) {
+        appendMsg('ai', replyText);
+      } else {
+        appendMsg('ai', '⚠️ تعذر الاتصال بجميع نماذج Gemini المتاحة. تحقق من صحة مفتاح API أو من اتصال الشبكة، ثم حاول مجدداً.', false);
+      }
+    }
 
     async function sendAIMessage (text) {
       openAI();
@@ -1422,37 +2271,10 @@
         appendMsg('ai', '⚠️ لم يتم إضافة مفتاح Gemini API بعد. افتح الإعدادات (في القائمة الجانبية) وأضف مفتاحك للمتابعة.', false);
         return;
       }
-      const thinkingRow = document.createElement('div');
-      thinkingRow.className = 'msg-row ai'; thinkingRow.style.alignSelf = 'flex-start';
-      thinkingRow.innerHTML = '<div class="msg ai">...أقرأ دليلك الغذائي وأفكر</div>';
-      document.getElementById('aiBody').appendChild(thinkingRow);
-      document.getElementById('aiBody').scrollTop = 999999;
-
-      const systemPrompt = buildSystemPrompt();
-      const contents = state.chatHistory.map(m => ({ role: m.role === 'ai' ? 'model' : 'user', parts: [ { text: m.text } ] }));
-      let replyText = null;
-
-      for (const model of GEMINI_MODELS) {
-        try {
-          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'x-goog-api-key': state.apiKey
-            },
-            body: JSON.stringify({ system_instruction: { parts: [ { text: systemPrompt } ] }, contents: contents })
-          });
-          if (!res.ok) continue;
-          const data = await res.json();
-          replyText = data?.candidates?.[ 0 ]?.content?.parts?.map(p => p.text).join('') || null;
-          if (replyText) break;
-        } catch (err) { }
-      }
-      thinkingRow.remove();
-      if (replyText) {
-        appendMsg('ai', replyText);
-      } else {
-        appendMsg('ai', 'تعذر الاتصال بجميع نماذج Gemini المتاحة. تحقق من صحة مفتاح API أو من اتصال الشبكة، ثم حاول مجدداً.', false);
+      await sendAIMessage_internal(text);
+      // Show FAB badge if panel was closed when response arrived
+      if (!document.getElementById('aiPanel').classList.contains('open')) {
+        document.getElementById('aiFabBadge').classList.add('show');
       }
     }
 
